@@ -1,10 +1,28 @@
+/* @module */
+
+/** @file
+ * Map Excel files to AoO.
+ */
+"use strict";
 var xlsx = require('node-xlsx');
 var fs = require('fs');
 
-/* Construct Excel Spreadsheet Mapper.
-* @param {string} filename - Filename for XLSX Spreadsheet
-* @param {opts} opts - Options for ExcelMapper
-*/
+//  ExcelMapper
+
+/** Construct Excel Spreadsheet Mapper.
+ *
+ * - Load Excel file into the object
+ * - Set good default internal state
+ * 
+ * Example construction:
+ *
+ *         var emap = new ExcelMapper("/imports/products.xslx", {debug: 0})
+ *
+ * @param {string} filename - Filename for XLSX Spreadsheet
+ * @param {opts} opts - Options for ExcelMapper
+ * @constructor
+ * 
+ */
 function ExcelMapper(filename, opts) {
    this.opts = opts || {};
    var xlsxcont = fs.readFileSync(filename); // try {...}
@@ -16,13 +34,15 @@ function ExcelMapper(filename, opts) {
    this.sh = null;
    this.cols = null;
 }
+
 /** List sheets of excel workbook.
-* @return Array of Original sheet names.
-*/
+ * @return Array of Original sheet names.
+ */
 ExcelMapper.prototype.listsheets = function () {
   console.log("Listing sheets");
   return this.book.map(function (s) {return s.name});
-}
+};
+
 /** Set Active sheet in Excel.
  * As a side effect:
  * - sets the column names to be used on AoO mapping to ones found
@@ -45,7 +65,7 @@ ExcelMapper.prototype.sheet = function (saddr) {
     throw "Could not access sheet by Index "+ si+ " (Number of sheets: "+obj.length+")";
   }
   else {
-     sh = obj.filter(function (s) {return s.name === saddr;});
+     var sh = obj.filter(function (s) {return s.name === saddr;});
      if (!sh.length) {throw "Sheet by label '" + saddr + "' not in set of sheets";}
      this.sh = sh[0];
      this.cols = this.cols_extract();
@@ -54,9 +74,11 @@ ExcelMapper.prototype.sheet = function (saddr) {
   throw "Sheet "+ saddr +"not in boundaries of XLSX";
 };
 
-/** Extract and remove first row of sheet as columns.
+/** Internal method to extract and remove first row of sheet as columns.
+ * Called at the time of setting the "active sheet" by sheet().
  * Removes the first row completely from data.
  * @return columns as Array
+ * @todo consider the side effects of activating the same sheet multiple times (for now: don't do this).
  */
 ExcelMapper.prototype.cols_extract = function ( opts) {
    opts = opts || {}; // self.opts
@@ -69,6 +91,7 @@ ExcelMapper.prototype.cols_extract = function ( opts) {
    }
    return(cols);
 };
+
 /** Get existing column names or set columns explicitly.
  * In case of setting no check is done for the presence of columns
  * (You can perform a get call before setting if you want to do this.
@@ -79,12 +102,12 @@ ExcelMapper.prototype.cols = function ( colnames) {
 };
 
 /** Convert (XLSX) AoA to more universal AoO based structure.
-* Base conversion on column / property names spec in:
- * - attrs passed directly here
+ * Base conversion on column / property names spec in:
+ * - Optional attrs passed directly here
  * - the column names stored implicitly at the time of call to sheet().
  * @param {string} attrs - Column names to use in  conversion to AoO.
-* @return data transformed into AoH format.
-*/
+ * @return data transformed into AoH format.
+ */
 ExcelMapper.prototype.to_aoh = function (attrs) {
    var d = this.sh.data;
    attrs = attrs || this.cols; // Default: Use cols extracted earlier
@@ -102,7 +125,8 @@ ExcelMapper.prototype.to_aoh = function (attrs) {
       return(e);
    });
    return(out);
-}
+};
+
 /* TODO: Get rid of lines / rows
  * Count on this being so custom and on the other hand trivial in JS that
  * this method does not need to be there (at least first).
@@ -116,4 +140,5 @@ ExcelMapper.prototype.to_aoh = function (attrs) {
 function cleanup () {
   
 }
+
 module.exports.ExcelMapper = ExcelMapper;
