@@ -1,0 +1,16 @@
+{
+  "name": "excelmapper",
+  "version": "0.1.0",
+  "description": "Map Excel Spreadsheets into a usable AoH structure format.",
+  "main": "excelmapper.js",
+  "author": "Olli Hollmen",
+  "dependencies": {
+    "node-xlsx": "~0.6.0"
+  },
+  "keywords": [
+    "Excel",
+    "Import",
+    "Data Mapping"
+  ],
+  "license": "MIT"
+}
