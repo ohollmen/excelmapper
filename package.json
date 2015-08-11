@@ -7,6 +7,9 @@
   "dependencies": {
     "node-xlsx": "~0.6.0"
   },
+  "devDependencies": {
+    "jsdoc": "~3.3.2"
+  },
   "keywords": [
     "Excel",
     "Import",
