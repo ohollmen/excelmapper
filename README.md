@@ -9,6 +9,7 @@ format to pass to a view template, or format from which to do bulk imports to a 
 
 # Usage
 
+    var emapper = require('./excelmapper');
     // opts from command line has "file" for filename, "sheet" for sheet addressing
 
     var emap = new emapper.ExcelMapper(opts.file, { debug: 1 });
@@ -45,3 +46,12 @@ various massaging operations, cleanup and data transformations plus validation b
 a viewable / importable format. These processing steps are not the focus of excelmapper. Try the good-ol'
 Javascript and maybe underscore library for these ops.
 
+# Further Examples
+
+See script `xltest.js` in GitHub distribution. Try running it with command line options (e.g. similar to...):
+
+    ./xltest.js  --file /tmp/excel-test.xlsx --sheet mySheetName
+
+# Converting Embedded Docs with JSDoc
+
+    jsdoc excelmapper.js -R README.md -c jsdoc.conf.json
