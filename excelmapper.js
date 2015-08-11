@@ -4,8 +4,8 @@
  * Map Excel files to AoO.
  */
 "use strict";
-var xlsx = require('node-xlsx');
-var fs = require('fs');
+var xlsx = require("node-xlsx");
+var fs = require("fs");
 
 //  ExcelMapper
 
@@ -13,7 +13,7 @@ var fs = require('fs');
  *
  * - Load Excel file into the object
  * - Set good default internal state
- * 
+ *
  * Example construction:
  *
  *         var emap = new ExcelMapper("/imports/products.xslx", {debug: 0})
@@ -21,18 +21,18 @@ var fs = require('fs');
  * @param {string} filename - Filename for XLSX Spreadsheet
  * @param {opts} opts - Options for ExcelMapper
  * @constructor
- * 
  */
 function ExcelMapper(filename, opts) {
-   this.opts = opts || {};
-   var xlsxcont = fs.readFileSync(filename); // try {...}
-   if (opts.debug) {
-     this.debug = 1;
-     console.log(xlsxcont.length +  " B (of XLSX)");}
-   var obj = this.book = xlsx.parse(xlsxcont);
-   if (this.debug) { console.log(obj); }
-   this.sh = null;
-   this.cols = null;
+  this.opts = opts || {};
+  var xlsxcont = fs.readFileSync(filename); // try {...}
+  if (opts.debug) {
+    this.debug = 1;
+    console.log(xlsxcont.length +  " B (of XLSX)");
+  }
+  var obj = this.book = xlsx.parse(xlsxcont);
+  if (this.debug) { console.log(obj); }
+  this.sh = null;
+  this.cols = null;
 }
 
 /** List sheets of excel workbook.
@@ -40,7 +40,7 @@ function ExcelMapper(filename, opts) {
  */
 ExcelMapper.prototype.listsheets = function () {
   console.log("Listing sheets");
-  return this.book.map(function (s) {return s.name});
+  return this.book.map(function (s) {return s.name;});
 };
 
 /** Set Active sheet in Excel.
@@ -60,18 +60,18 @@ ExcelMapper.prototype.sheet = function (saddr) {
     if (si < obj.length) {
       this.sh = obj[si];
       this.cols = this.cols_extract();
-      return(this.sh);
+      return this.sh;
     }
-    throw "Could not access sheet by Index "+ si+ " (Number of sheets: "+obj.length+")";
+    throw "Could not access sheet by Index " + si + " (Number of sheets: " + obj.length + ")";
   }
   else {
-     var sh = obj.filter(function (s) {return s.name === saddr;});
-     if (!sh.length) {throw "Sheet by label '" + saddr + "' not in set of sheets";}
-     this.sh = sh[0];
-     this.cols = this.cols_extract();
-     return(this.sh);
+    var sh = obj.filter(function (s) {return s.name === saddr;});
+    if (!sh.length) {throw "Sheet by label '" + saddr + "' not in set of sheets";}
+    this.sh = sh[0];
+    this.cols = this.cols_extract();
+    return this.sh;
   }
-  throw "Sheet "+ saddr +"not in boundaries of XLSX";
+  throw "Sheet " + saddr + "not in boundaries of XLSX";
 };
 
 /** Internal method to extract and remove first row of sheet as columns.
@@ -81,15 +81,15 @@ ExcelMapper.prototype.sheet = function (saddr) {
  * @todo consider the side effects of activating the same sheet multiple times (for now: don't do this).
  */
 ExcelMapper.prototype.cols_extract = function ( opts) {
-   opts = opts || {}; // self.opts
-   var cols = this.sh.data.shift(); // self.cols;
-   if (!Array.isArray(cols)) { throw "Cols Not an array"; }
-   if (opts.nows) { // No whitespace
-     cols.forEach(function (c) {
-       if (c.match(/\s+/)) { throw "Whitespace in column name '" + c + "' !"; }
-     });
-   }
-   return(cols);
+  opts = opts || {}; // self.opts
+  var cols = this.sh.data.shift(); // self.cols;
+  if (!Array.isArray(cols)) { throw "Cols Not an array"; }
+  if (opts.nows) { // No whitespace
+    cols.forEach(function (c) {
+      if (c.match(/\s+/)) { throw "Whitespace in column name '" + c + "' !"; }
+    });
+  }
+  return cols;
 };
 
 /** Get existing column names or set columns explicitly.
@@ -98,7 +98,7 @@ ExcelMapper.prototype.cols_extract = function ( opts) {
  */
 ExcelMapper.prototype.cols = function ( colnames) {
   if (colnames) {this.cols = colnames;}
-  return(this.cols);
+  return this.cols;
 };
 
 /** Convert (XLSX) AoA to more universal AoO based structure.
@@ -109,22 +109,22 @@ ExcelMapper.prototype.cols = function ( colnames) {
  * @return data transformed into AoH format.
  */
 ExcelMapper.prototype.to_aoh = function (attrs) {
-   var d = this.sh.data;
-   attrs = attrs || this.cols; // Default: Use cols extracted earlier
-   if (!Array.isArray(d)) { throw "Sheet Data Not an array"; }
-   if (!Array.isArray(attrs)) { throw "Property Names Not an array (Got: " + attrs+ ")"; }
-   var out = d.map(function (r) {
-      var i = 0;
-      var e = {};
-      // Strict ? Create check col. length(d) {}
-      // if (d.length != attrs.length) {throw "Not corr. width";}
-      attrs.forEach(function (an) {
-         e[an] = r[i];
-         i++;
-      });
-      return(e);
-   });
-   return(out);
+  var d = this.sh.data;
+  attrs = attrs || this.cols; // Default: Use cols extracted earlier
+  if (!Array.isArray(d)) { throw "Sheet Data Not an array"; }
+  if (!Array.isArray(attrs)) { throw "Property Names Not an array (Got: " + attrs + ")"; }
+  var out = d.map(function (r) {
+    var i = 0;
+    var e = {};
+    // Strict ? Create check col. length(d) {}
+    // if (d.length != attrs.length) {throw "Not corr. width";}
+    attrs.forEach(function (an) {
+      e[an] = r[i];
+      i++;
+    });
+    return e;
+  });
+  return out;
 };
 
 /* TODO: Get rid of lines / rows
@@ -138,7 +138,6 @@ ExcelMapper.prototype.to_aoh = function (attrs) {
  *   actual data lines
  */
 function cleanup () {
-  
 }
 
 module.exports.ExcelMapper = ExcelMapper;
