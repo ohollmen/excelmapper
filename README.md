@@ -3,9 +3,9 @@
 excelmapper is a Excel trasformation utility library for converting / mapping XLSX files into Array of Objects (AoO)
 by an column attribute definition.
 
-The purpose of module is convert the (ode-xlsx) Excel spreadsheet internal format to the more usable
-Array of Objects format, that is more likely to be useed in various contexts (as output of a REST service,
-format to pass to a view template, or format from which to do bulk inserts to database using an ORM toolkit).
+The purpose of module is convert the (node-xlsx) Excel spreadsheet internal format to the more usable
+Array of Objects (AoO) format, that is more likely to be used in various contexts (as output of a REST service,
+format to pass to a view template, or format from which to do bulk imports to a database using an ORM toolkit).
 
 # Usage
 
@@ -42,6 +42,6 @@ DB Import Usage with Sequelize:
 
 Data import, especially from spreadsheet is always a "dirty job" and you will most likely be doing
 various massaging operations, cleanup and data transformations plus validation before ending up with
-a viewable / imprtable format. These processing steps are not the focus of excelmapper. Try the good-ol'
-Javascript and maybe underscore for these ops.
+a viewable / importable format. These processing steps are not the focus of excelmapper. Try the good-ol'
+Javascript and maybe underscore library for these ops.
 
