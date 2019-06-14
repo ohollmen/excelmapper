@@ -50,7 +50,7 @@ ExcelMapper.prototype.listsheets = function () {
  * - Sets the active sheet (for later data access)
  * @return Single sheet (in case low level access is needed)
  */
-ExcelMapper.prototype.sheet = function (saddr) {
+ExcelMapper.prototype.sheet = function (saddr, opts) {
   if (!saddr) {throw "No Sheet Name or Index";}
   var si;
   this.sh = null; // Single sheet
@@ -59,7 +59,7 @@ ExcelMapper.prototype.sheet = function (saddr) {
     si = parseInt(saddr);
     if (si < obj.length) {
       this.sh = obj[si];
-      this.cols = this.cols_extract();
+      this.cols = this.cols_extract(opts);
       return this.sh;
     }
     throw "Could not access sheet by Index " + si + " (Number of sheets: " + obj.length + ")";
@@ -68,7 +68,7 @@ ExcelMapper.prototype.sheet = function (saddr) {
     var sh = obj.filter(function (s) {return s.name === saddr;});
     if (!sh.length) {throw "Sheet by label '" + saddr + "' not in set of sheets";}
     this.sh = sh[0];
-    this.cols = this.cols_extract();
+    this.cols = this.cols_extract(opts);
     return this.sh;
   }
   throw "Sheet " + saddr + "not in boundaries of XLSX";
